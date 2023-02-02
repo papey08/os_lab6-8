@@ -1,4 +1,4 @@
-package rbtree
+package data_struct
 
 type DataStructure interface {
 

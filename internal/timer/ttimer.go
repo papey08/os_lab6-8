@@ -16,5 +16,9 @@ func (t *TTimer) Start() {
 
 // GetTime returns how many seconds passed since timer was started
 func (t *TTimer) GetTime() int {
-	return int(time.Since(t.start).Seconds())
+	if t.isStarted {
+		return int(time.Since(t.start).Seconds())
+	} else {
+		return 0
+	}
 }

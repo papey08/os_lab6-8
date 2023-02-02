@@ -5,7 +5,7 @@ import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
-	"os_lab6-8/internal/rbtree"
+	"os_lab6-8/internal/data_struct"
 )
 
 type Message struct {
@@ -16,7 +16,7 @@ type Message struct {
 
 func main() {
 	// creating myDataStructure which contains nodes with timers
-	myDataStructure := rbtree.NewDefaultMap()
+	myDataStructure := data_struct.NewDefaultMap()
 
 	// connecting to RabbitMQ
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
