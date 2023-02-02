@@ -2,7 +2,7 @@ package rbtree
 
 import "testing"
 
-func TestRBTree_Insert(t *testing.T) {
+func TestRBTree_InsertNode(t *testing.T) {
 	tests := []struct {
 		idsToInsert    []int
 		idsToFind      []int

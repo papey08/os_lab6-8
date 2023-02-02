@@ -42,7 +42,7 @@ func newNode(id int, nodeColor nodeColor) *node {
 }
 
 // find returns timer from the node with specified id
-func (n *node) find(id int) *timer.TTimer {
+func (n *node) find(id int) *node {
 	if n == &leafNode {
 		return nil
 	}
@@ -57,5 +57,53 @@ func (n *node) find(id int) *timer.TTimer {
 			return nil
 		}
 	}
-	return current.t
+	return current
+}
+
+func (rbt *RBTree) rotateLeft(x *node) {
+	y := x.right
+	x.right = y.left
+	if y.left != &leafNode {
+		y.left.parent = x
+	}
+	if y != &leafNode {
+		y.parent = x.parent
+	}
+	if x.parent != nil {
+		if x == x.parent.left {
+			x.parent.left = y
+		} else {
+			x.parent.right = y
+		}
+	} else {
+		rbt.root = y
+	}
+	y.left = x
+	if x != &leafNode {
+		x.parent = y
+	}
+}
+
+func (rbt *RBTree) rotateRight(x *node) {
+	y := x.left
+	x.left = y.right
+	if y.right != &leafNode {
+		y.right.parent = x
+	}
+	if y != &leafNode {
+		y.parent = x.parent
+	}
+	if x.parent != nil {
+		if x == x.parent.right {
+			x.parent.right = y
+		} else {
+			x.parent.left = y
+		}
+	} else {
+		rbt.root = y
+	}
+	y.right = x
+	if x != &leafNode {
+		x.parent = y
+	}
 }

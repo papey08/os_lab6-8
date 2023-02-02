@@ -17,6 +17,9 @@ type DataStructure interface {
 	// DeleteNode deletes node from data structure by id
 	DeleteNode(id int) error
 
+	// ResetNode stops the timer at node id and sets it's time as 0
+	ResetNode(id int) error
+
 	// Length returns amount of nodes in data structure
 	Length() int
 }

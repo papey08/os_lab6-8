@@ -41,9 +41,23 @@ func main() {
 	fmt.Println("Enter the messages in format <command> <ID of the node>")
 
 	// sending message into queue
+	supportedCommands := map[string]struct{}{
+		"get":    {},
+		"insert": {},
+		"start":  {},
+		"pause":  {},
+		"delete": {},
+		"size":   {},
+		"reset":  {},
+	}
 	for {
 		var msg Message
-		fmt.Scan(&msg.Cmd, &msg.NodeID)
+		fmt.Scan(&msg.Cmd)
+		if _, ok := supportedCommands[msg.Cmd]; ok {
+			if msg.Cmd != "size" {
+				fmt.Scan(&msg.NodeID)
+			}
+		}
 		msgStr, _ := json.Marshal(msg)
 		err = ch.PublishWithContext(ctx,
 			"",

@@ -62,6 +62,15 @@ func (d *DefaultMap) DeleteNode(id int) error {
 	}
 }
 
+func (d *DefaultMap) ResetTimer(id int) error {
+	if _, ok := d.tmap[id]; ok {
+		d.tmap[id].Reset()
+		return nil
+	} else {
+		return errors.New("node with id " + strconv.Itoa(id) + " not exists")
+	}
+}
+
 func (d *DefaultMap) Length() int {
 	return len(d.tmap)
 }

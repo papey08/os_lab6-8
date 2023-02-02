@@ -79,13 +79,27 @@ func main() {
 			}
 		case "start":
 			if StartErr := myDataStructure.StartTimer(m.NodeID); StartErr != nil {
-				log.Println("StartTime error: " + StartErr.Error())
+				log.Println("StartTimer error: " + StartErr.Error())
 			} else {
 				log.Println("Node ", m.NodeID, " OK")
 			}
 		case "pause":
 			if PauseErr := myDataStructure.PauseTimer(m.NodeID); PauseErr != nil {
-				log.Println("StartTime error: " + PauseErr.Error())
+				log.Println("PauseTimer error: " + PauseErr.Error())
+			} else {
+				log.Println("Node ", m.NodeID, " OK")
+			}
+		case "delete":
+			if DeleteErr := myDataStructure.DeleteNode(m.NodeID); DeleteErr != nil {
+				log.Println("DeleteNode error: " + DeleteErr.Error())
+			} else {
+				log.Println("Node ", m.NodeID, " OK")
+			}
+		case "size":
+			log.Println("size: ", myDataStructure.Length(), " nodes")
+		case "reset":
+			if ResetErr := myDataStructure.ResetTimer(m.NodeID); ResetErr != nil {
+				log.Println("ResetTimer error: " + ResetErr.Error())
 			} else {
 				log.Println("Node ", m.NodeID, " OK")
 			}
