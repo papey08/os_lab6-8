@@ -6,91 +6,91 @@ import (
 )
 
 func (rbt *RBTree) rotateLeft(x *node) {
-	y := x.rightChild
-	x.rightChild = y.leftChild
-	if y.leftChild != &leafNode {
-		y.leftChild.parentNode = x
+	y := x.right
+	x.right = y.left
+	if y.left != &leafNode {
+		y.left.parent = x
 	}
 	if y != &leafNode {
-		y.parentNode = x.parentNode
+		y.parent = x.parent
 	}
-	if x.parentNode != nil {
-		if x == x.parentNode.leftChild {
-			x.parentNode.leftChild = y
+	if x.parent != nil {
+		if x == x.parent.left {
+			x.parent.left = y
 		} else {
-			x.parentNode.rightChild = y
+			x.parent.right = y
 		}
 	} else {
 		rbt.root = y
 	}
-	y.leftChild = x
+	y.left = x
 	if x != &leafNode {
-		x.parentNode = y
+		x.parent = y
 	}
 }
 
 func (rbt *RBTree) rotateRight(x *node) {
-	y := x.leftChild
-	x.leftChild = y.rightChild
-	if y.rightChild != &leafNode {
-		y.rightChild.parentNode = x
+	y := x.left
+	x.left = y.right
+	if y.right != &leafNode {
+		y.right.parent = x
 	}
 	if y != &leafNode {
-		y.parentNode = x.parentNode
+		y.parent = x.parent
 	}
-	if x.parentNode != nil {
-		if x == x.parentNode.rightChild {
-			x.parentNode.rightChild = y
+	if x.parent != nil {
+		if x == x.parent.right {
+			x.parent.right = y
 		} else {
-			x.parentNode.leftChild = y
+			x.parent.left = y
 		}
 	} else {
 		rbt.root = y
 	}
-	y.rightChild = x
+	y.right = x
 	if x != &leafNode {
-		x.parentNode = y
+		x.parent = y
 	}
 }
 
 // fixInsert rotates & recolors some nodes for implementing rbtree's properties if need
 func (rbt *RBTree) fixInsert(x *node) {
-	for x != rbt.root && x.parentNode.nodeColor == red {
-		if x.parentNode == x.parentNode.parentNode.leftChild {
-			y := x.parentNode.parentNode.rightChild
-			if y.nodeColor == red { // found red uncle => recoloring, no rotations
-				x.parentNode.nodeColor = black
-				y.nodeColor = black
-				x.parentNode.parentNode.nodeColor = red
-				x = x.parentNode.parentNode
+	for x != rbt.root && x.parent.color == red {
+		if x.parent == x.parent.parent.left {
+			y := x.parent.parent.right
+			if y.color == red { // found red uncle => recoloring, no rotations
+				x.parent.color = black
+				y.color = black
+				x.parent.parent.color = red
+				x = x.parent.parent
 			} else { // recoloring & rotating
-				if x == x.parentNode.rightChild {
-					x = x.parentNode
+				if x == x.parent.right {
+					x = x.parent
 					rbt.rotateLeft(x)
 				}
-				x.parentNode.nodeColor = black
-				x.parentNode.parentNode.nodeColor = red
-				rbt.rotateRight(x.parentNode.parentNode)
+				x.parent.color = black
+				x.parent.parent.color = red
+				rbt.rotateRight(x.parent.parent)
 			}
 		} else {
-			y := x.parentNode.parentNode.leftChild
-			if y.nodeColor == red { // found red uncle
-				x.parentNode.nodeColor = black
-				y.nodeColor = black
-				x.parentNode.parentNode.nodeColor = red
-				x = x.parentNode.parentNode
+			y := x.parent.parent.left
+			if y.color == red { // found red uncle
+				x.parent.color = black
+				y.color = black
+				x.parent.parent.color = red
+				x = x.parent.parent
 			} else { // recoloring & rotating
-				if x == x.parentNode.leftChild {
-					x = x.parentNode
+				if x == x.parent.left {
+					x = x.parent
 					rbt.rotateRight(x)
 				}
-				x.parentNode.nodeColor = black
-				x.parentNode.parentNode.nodeColor = red
-				rbt.rotateLeft(x.parentNode.parentNode)
+				x.parent.color = black
+				x.parent.parent.color = red
+				rbt.rotateLeft(x.parent.parent)
 			}
 		}
 	}
-	rbt.root.nodeColor = black
+	rbt.root.color = black
 }
 
 func (rbt *RBTree) insert(id int) error {
@@ -101,10 +101,10 @@ func (rbt *RBTree) insert(id int) error {
 	for current != &leafNode {
 		if id < current.id {
 			parent = current
-			current = current.leftChild
+			current = current.left
 		} else if id > current.id {
 			parent = current
-			current = current.rightChild
+			current = current.right
 		} else {
 			return errors.New("node with id " + strconv.Itoa(id) +
 				" already exists")
@@ -112,12 +112,12 @@ func (rbt *RBTree) insert(id int) error {
 	}
 	// inserting new node
 	x := newNode(id, red)
-	x.parentNode = parent
+	x.parent = parent
 	if parent != nil {
 		if parent.id > id {
-			parent.leftChild = x
+			parent.left = x
 		} else {
-			parent.rightChild = x
+			parent.right = x
 		}
 	} else {
 		rbt.root = new(node)

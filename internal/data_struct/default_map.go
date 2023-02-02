@@ -3,6 +3,7 @@ package data_struct
 import (
 	"errors"
 	"os_lab6-8/internal/timer"
+	"strconv"
 )
 
 // DefaultMap is a cover over map from standard golang library implements DataStructure interface
@@ -20,7 +21,7 @@ func (d *DefaultMap) GetTime(id int) (int, error) {
 	if _, ok := d.tmap[id]; ok {
 		return d.tmap[id].GetTime(), nil
 	} else {
-		return 0, errors.New("node not exist")
+		return 0, errors.New("node with id " + strconv.Itoa(id) + " not exists")
 	}
 }
 
@@ -29,13 +30,23 @@ func (d *DefaultMap) StartTimer(id int) error {
 		d.tmap[id].Start()
 		return nil
 	} else {
-		return errors.New("node not exist")
+		return errors.New("node with id " + strconv.Itoa(id) + " not exists")
+	}
+}
+
+func (d *DefaultMap) PauseTimer(id int) error {
+	if _, ok := d.tmap[id]; ok {
+		d.tmap[id].Pause()
+		return nil
+	} else {
+		return errors.New("node with id " + strconv.Itoa(id) + " not exists")
 	}
 }
 
 func (d *DefaultMap) InsertNode(id int) error {
 	if _, ok := d.tmap[id]; ok {
-		return errors.New("node already exists")
+		return errors.New("node with id " + strconv.Itoa(id) +
+			" already exists")
 	} else {
 		d.tmap[id] = new(timer.TTimer)
 		return nil
@@ -44,7 +55,7 @@ func (d *DefaultMap) InsertNode(id int) error {
 
 func (d *DefaultMap) DeleteNode(id int) error {
 	if _, ok := d.tmap[id]; !ok {
-		return errors.New("node not exists")
+		return errors.New("node with id " + strconv.Itoa(id) + " not exists")
 	} else {
 		delete(d.tmap, id)
 		return nil

@@ -53,7 +53,7 @@ func TestRBTree_Insert(t *testing.T) {
 		}
 		for j, x := range answers {
 			if x != tests[i].correctAnswers[j] {
-				t.Errorf("Wrong test %d", i)
+				t.Errorf("Wrong test %d of %d", i+1, len(tests))
 			}
 		}
 	}

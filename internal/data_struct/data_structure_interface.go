@@ -8,6 +8,9 @@ type DataStructure interface {
 	// StartTimer starts timer at node id
 	StartTimer(id int) error
 
+	// PauseTimer sets timer at node id on pause
+	PauseTimer(id int) error
+
 	// InsertNode adds new node with ID into data structure with
 	InsertNode(id int) error
 

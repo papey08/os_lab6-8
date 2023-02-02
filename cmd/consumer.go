@@ -5,7 +5,7 @@ import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
-	"os_lab6-8/internal/data_struct"
+	"os_lab6-8/internal/data_struct/rbtree"
 )
 
 type Message struct {
@@ -16,7 +16,7 @@ type Message struct {
 
 func main() {
 	// creating myDataStructure which contains nodes with timers
-	myDataStructure := data_struct.NewDefaultMap()
+	myDataStructure := rbtree.NewRBTree()
 
 	// connecting to RabbitMQ
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
@@ -68,24 +68,29 @@ func main() {
 			t, GetTimeError := myDataStructure.GetTime(m.NodeID)
 			if GetTimeError != nil {
 				log.Println("GetTime error: " + GetTimeError.Error())
-				continue
 			} else {
-				fmt.Println("Node ", m.NodeID, " OK: ", t)
+				log.Println("Node ", m.NodeID, " OK: ", t)
 			}
 		case "insert":
 			if InsertErr := myDataStructure.InsertNode(m.NodeID); InsertErr != nil {
 				log.Println("InsertNode error: " + InsertErr.Error())
-				continue
 			} else {
-				fmt.Println("Node ", m.NodeID, " OK")
+				log.Println("Node ", m.NodeID, " OK")
 			}
 		case "start":
 			if StartErr := myDataStructure.StartTimer(m.NodeID); StartErr != nil {
 				log.Println("StartTime error: " + StartErr.Error())
-				continue
 			} else {
-				fmt.Println("Node ", m.NodeID, " OK")
+				log.Println("Node ", m.NodeID, " OK")
 			}
+		case "pause":
+			if PauseErr := myDataStructure.PauseTimer(m.NodeID); PauseErr != nil {
+				log.Println("StartTime error: " + PauseErr.Error())
+			} else {
+				log.Println("Node ", m.NodeID, " OK")
+			}
+		default:
+			log.Println("command " + m.Cmd + " not found")
 		}
 	}
 }
