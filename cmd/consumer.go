@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/spf13/viper"
 	"log"
 	"os_lab6-8/internal/data_struct/rbtree"
 )
@@ -14,12 +15,19 @@ type Message struct {
 	Arg1   int    `json:"arg1"`
 }
 
+func InitConfig() error {
+	viper.SetConfigFile("config.yml")
+	return viper.ReadInConfig()
+}
+
 func main() {
-	// creating myDataStructure which contains nodes with timers
-	myDataStructure := rbtree.NewRBTree()
+	// getting data from config.yml
+	if err := InitConfig(); err != nil {
+		log.Fatal(err)
+	}
 
 	// connecting to RabbitMQ
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(viper.GetString("conn_string"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,13 +42,16 @@ func main() {
 
 	// creating message queue
 	q, err := ch.QueueDeclare(
-		"TestQueue",
+		viper.GetString("queue_name"),
 		false,
 		false,
 		false,
 		false,
 		nil,
 	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// getting messages from the queue
 	msgs, err := ch.Consume(
@@ -56,6 +67,10 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("Consumer is ready to get messages")
+
+	// creating myDataStructure which contains nodes with timers
+	myDataStructure := rbtree.NewRBTree()
+
 	for msg := range msgs {
 		var m Message
 		err = json.Unmarshal(msg.Body, &m)

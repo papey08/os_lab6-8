@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/spf13/viper"
 	"log"
 	"time"
 )
@@ -15,9 +16,18 @@ type Message struct {
 	Arg1   int    `json:"arg1"`
 }
 
+func InitConfig() error {
+	viper.SetConfigFile("config.yml")
+	return viper.ReadInConfig()
+}
+
 func main() {
+	// getting data from config.yml
+	if err := InitConfig(); err != nil {
+		log.Fatal(err)
+	}
 	// connecting to rabbitmq
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(viper.GetString("conn_string"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,7 +41,13 @@ func main() {
 	defer ch.Close()
 
 	// creating message queue
-	q, err := ch.QueueDeclare("TestQueue", false, false, false, false, nil)
+	q, err := ch.QueueDeclare(
+		viper.GetString("queue_name"),
+		false,
+		false,
+		false,
+		false,
+		nil)
 	if err != nil {
 		log.Fatal(err)
 	}
